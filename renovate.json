@@ -1,0 +1,128 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":semanticCommitType(chore)"
+  ],
+  "enabledManagers": [
+    "maven",
+    "github-actions",
+    "custom.regex"
+  ],
+  "commitMessagePrefix": "chore(all): ",
+  "commitMessageAction": "update",
+  "commitBody": "Signed-off-by: Renovate Bot <bot@renovateapp.com>",
+  "labels": [
+    "dependencies"
+  ],
+  "prConcurrentLimit": 50,
+  "prHourlyLimit": 0,
+  "platformAutomerge": true,
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "ignoreTests": false,
+  "vulnerabilityAlerts": {
+    "labels": [
+      "security"
+    ],
+    "automerge": true,
+    "minimumReleaseAge": "0 days"
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Makefile tool versions via inline renovate comments",
+      "managerFilePatterns": ["/^Makefile$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)( extractVersion=(?<extractVersion>[^\\s]+))?( versioning=(?<versioning>[^\\s]+))?\\n[A-Z_]+\\s*:=\\s*(?<currentValue>[^\\s]+)"
+      ]
+    },
+    {
+      "customType": "regex",
+      "description": "Update .mise.toml tool pins via inline renovate comments. Regex is intentionally more permissive than the canonical /renovate skill pattern to match aqua-prefixed quoted keys (e.g. \"aqua:nektos/act\") — do not regularize.",
+      "managerFilePatterns": ["/^\\.mise\\.toml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)( extractVersion=(?<extractVersion>[^\\s]+))?( versioning=(?<versioning>[^\\s]+))?\\n\"?[a-zA-Z0-9:/_-]+\"?\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Wait 3 days before automerging major updates",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Label Java dependencies",
+      "matchCategories": [
+        "java"
+      ],
+      "addLabels": [
+        "lang: java"
+      ]
+    },
+    {
+      "description": "Group GitHub Actions into one PR",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Group Makefile tool versions into one PR",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "groupName": "Makefile tool versions"
+    },
+    {
+      "description": "Group Jackson 3.x dependencies",
+      "groupName": "Jackson",
+      "matchPackageNames": [
+        "/^tools\\.jackson/",
+        "/^com\\.fasterxml\\.jackson\\.annotation/"
+      ]
+    },
+    {
+      "description": "Group Retrofit + OkHttp into one PR — Retrofit 3.x ⇔ OkHttp 5.x is the only supported pairing; bumping them together prevents version drift.",
+      "groupName": "Retrofit + OkHttp",
+      "matchPackageNames": [
+        "/^com\\.squareup\\.okhttp3/",
+        "/^com\\.squareup\\.retrofit2/"
+      ]
+    },
+    {
+      "description": "Group Apache HttpClient 5 dependencies (httpclient5 + httpcore5 release in lockstep)",
+      "groupName": "Apache HttpClient",
+      "matchPackageNames": [
+        "/^org\\.apache\\.httpcomponents\\.client5/",
+        "/^org\\.apache\\.httpcomponents\\.core5/"
+      ]
+    },
+    {
+      "description": "Group SLF4J dependencies",
+      "groupName": "SLF4J",
+      "matchPackageNames": [
+        "/^org\\.slf4j/"
+      ]
+    },
+    {
+      "description": "Group JUnit dependencies (junit-jupiter-api + junit-jupiter-engine)",
+      "groupName": "JUnit",
+      "matchPackageNames": [
+        "/^org\\.junit/"
+      ]
+    },
+    {
+      "description": "Group Maven plugin dependencies",
+      "groupName": "Maven Plugins",
+      "matchPackageNames": [
+        "/^org\\.apache\\.maven\\.plugins/",
+        "/^org\\.codehaus\\.mojo/"
+      ]
+    }
+  ]
+}
