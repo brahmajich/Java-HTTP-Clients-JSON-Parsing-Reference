@@ -226,13 +226,3 @@ Pipeline: `changes` → `static-check` → `test` + `integration-test` + `build`
 | `OSS_INDEX_TOKEN` | `cve-check` | OSS Index API token from account settings |
 
 Set secrets via **Settings > Secrets and variables > Actions > New repository secret**.
-
-[Renovate](https://docs.renovatebot.com/) keeps dependencies up to date with platform automerge enabled.
-
-## Contributing
-
-Contributions welcome — open a PR. Review routing is configured via [CODEOWNERS](.github/CODEOWNERS).
-
-## License
-
-Released under the [MIT License](LICENSE).
